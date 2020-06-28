@@ -2,7 +2,26 @@
 
 set -e
 
-export NWJS_BRANCH="nw45"
+user="Your Name"
+email="you@example.com"
+branch="nw45"
+while [ "$1" != "" ]; do
+    case $1 in
+        -u | --user )           shift
+                                user=$1
+                                ;;
+        -e | --email )          shift
+                                email=$1
+                                ;;
+        -b | --branch )         shift
+                                branch=$1
+                                ;;
+        * )                     exit 1
+    esac
+    shift
+done
+
+export NWJS_BRANCH=$branch
 export WORKDIR="/usr/docker"
 export NWJSDIR="${WORKDIR}/nwjs"
 export DEPOT_TOOLS_DIRECTORY="${WORKDIR}/depot_tools"
@@ -20,12 +39,12 @@ function getNecessaryUbuntuPackages {
   apt-get -y install python
   apt-get autoclean
   apt-get autoremove
-  git config --global user.email "you@example.com"
-  git config --global user.name "Your Name"
+  git config --global user.email $email
+  git config --global user.name $user
 }
 
 function getDepotTools {
-  git clone --depth 1 "$DEPOT_TOOLS_REPO" "$DEPOT_TOOLS_DIRECTORY"
+  [ ! -d $DEPOT_TOOLS_DIRECTORY ] && git clone --depth 1 "$DEPOT_TOOLS_REPO" "$DEPOT_TOOLS_DIRECTORY"
 }
 
 function configureGclientForNwjs {

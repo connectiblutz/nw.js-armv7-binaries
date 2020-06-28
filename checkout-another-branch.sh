@@ -2,7 +2,22 @@
 
 set -e
 
-export NWJS_BRANCH="nw44"
+branch="nw45"
+arch="arm"
+while [ "$1" != "" ]; do
+    case $1 in
+        -b | --branch )         shift
+                                branch=$1
+                                ;;
+        -a | --arch )           shift
+                                arch=$1
+                                ;;
+        * )                     exit 1
+    esac
+    shift
+done
+
+export NWJS_BRANCH=$branch
 export WORKDIR="/usr/docker"
 export NWJSDIR="${WORKDIR}/nwjs"
 export DEPOT_TOOLS_DIRECTORY="${WORKDIR}/depot_tools"
@@ -42,8 +57,8 @@ function getNwjsRepository {
   cd $NWJSDIR/src
   gclient sync --reset --with_branch_heads --nohooks -D
   sh -c 'echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections'
-  $NWJSDIR/src/build/install-build-deps.sh --arm --no-prompt --no-backwards-compatible
-  $NWJSDIR/src/build/linux/sysroot_scripts/install-sysroot.py --arch=arm
+  $NWJSDIR/src/build/install-build-deps.sh --$arch --no-prompt --no-backwards-compatible
+  $NWJSDIR/src/build/linux/sysroot_scripts/install-sysroot.py --arch=$arch
   getGitRepository "https://github.com/nwjs/nw.js" "$NWJSDIR/src/content/nw"
   getGitRepository "https://github.com/nwjs/node" "$NWJSDIR/src/third_party/node-nw"
   getGitRepository "https://github.com/nwjs/v8" "$NWJSDIR/src/v8"
