@@ -1,0 +1,17 @@
+diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
+index 0c5babd9299f..cf8f0760ac34 100644
+--- a/chrome/browser/BUILD.gn
++++ b/chrome/browser/BUILD.gn
+@@ -5604,11 +5604,7 @@ proto_library("permissions_proto") {
+ }
+ 
+ grit("resources") {
+-  if (nwjs_sdk) {
+-    source = "browser_resources.grd"
+-  } else {
+-    source = "nwjs_resources.grd"
+-  }
++  source = "browser_resources.grd"
+ 
+   # Required due to flattenhtml="true" on a generated file.
+   enable_input_discovery_for_gn_analyze = false

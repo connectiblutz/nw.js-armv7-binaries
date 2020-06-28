@@ -2,6 +2,7 @@
 
 set -e
 
+SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 chrome=0
 sdk=0
@@ -39,32 +40,7 @@ function applyPatch {
   #   See: https://github.com/nwjs/chromium.src/issues/145
   cd $NWJSDIR/src
   git checkout -- chrome/browser/BUILD.gn
-  git am <<'PATCH' || git am --abort
-From dc3860edac430b1635050141343f6b6b34b1c451 Mon Sep 17 00:00:00 2001
-From: llamasoft <llamasoft@rm-rf.email>
-Date: Thu, 20 Feb 2020 18:17:06 -0500
-Subject: [PATCH] Always use SDK GRIT input file
----
- chrome/browser/BUILD.gn | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-diff --git a/chrome/browser/BUILD.gn b/chrome/browser/BUILD.gn
-index ab737dc95735..1ee73267ad15 100644
---- a/chrome/browser/BUILD.gn
-+++ b/chrome/browser/BUILD.gn
-@@ -5438,11 +5438,7 @@ proto_library("permissions_proto") {
- }
-
- grit("resources") {
--  if (nwjs_sdk) {
--    source = "browser_resources.grd"
--  } else {
--    source = "nwjs_resources.grd"
--  }
-+  source = "browser_resources.grd"
-
-   # The .grd contains references to generated files.
-   source_is_generated = true
-PATCH
+  patch -p1 < $SCRIPTPATH/resources.patch
 }
 
 function build {
